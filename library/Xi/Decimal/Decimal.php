@@ -173,12 +173,12 @@ class Decimal
         return $this->compareTo($that) >= 0;
     }
     
-    private static function maxScale($a, $b)
+    protected static function maxScale($a, $b)
     {
         return max(self::scaleOf($a), self::scaleOf($b));
     }
     
-    private static function scaleOf($x)
+    protected static function scaleOf($x)
     {
         $s = (string)$x;
         $i = strrpos($s, '.');
