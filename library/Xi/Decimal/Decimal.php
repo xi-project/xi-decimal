@@ -3,6 +3,12 @@ namespace Xi\Decimal;
 
 /**
  * An immutable fixed-point decimal number.
+ * 
+ * All arithmetic operations on the number return the result as a new instance.
+ * The scale of the new instance is the maximum of the scale of the operands
+ * i.e. the scale of `Decimal::create('3.45', 2)->plus('0.12345')` would be 5.
+ * You can override this by giving the desired scale as a second parameter
+ * to operations.
  */
 class Decimal
 {
@@ -83,9 +89,9 @@ class Decimal
      * @param int|float|string|Decimal $that What to add.
      * @return Decimal
      */
-    public function plus($that)
+    public function plus($that, $scale = null)
     {
-        return $this->doOp($that, 'bcadd');
+        return $this->doOp($that, $scale, 'bcadd');
     }
     
     /**
@@ -94,9 +100,9 @@ class Decimal
      * @param int|float|string|Decimal $that What to subtract.
      * @return Decimal
      */
-    public function minus($that)
+    public function minus($that, $scale = null)
     {
-        return $this->doOp($that, 'bcsub');
+        return $this->doOp($that, $scale, 'bcsub');
     }
     
     /**
@@ -105,9 +111,9 @@ class Decimal
      * @param int|float|string|Decimal $that What to multiply with.
      * @return Decimal
      */
-    public function times($that)
+    public function times($that, $scale = null)
     {
-        return $this->doOp($that, 'bcmul');
+        return $this->doOp($that, $scale, 'bcmul');
     }
         
     /**
@@ -116,14 +122,14 @@ class Decimal
      * @param int|float|string|Decimal $that What to divide with.
      * @return Decimal
      */
-    public function div($that)
+    public function div($that, $scale = null)
     {
-        return $this->doOp($that, 'bcdiv');
+        return $this->doOp($that, $scale, 'bcdiv');
     }
     
-    protected function doOp($that, $op)
+    protected function doOp($that, $scale, $op)
     {
-        $scale = self::maxScale($this, $that);
+        $scale = $scale ?: self::maxScale($this, $that);
         $result = $op((string)$this, (string)$that, $scale);
         return new static($result, $scale);
     }

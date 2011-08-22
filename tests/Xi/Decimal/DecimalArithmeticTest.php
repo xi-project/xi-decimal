@@ -100,6 +100,12 @@ class DecimalArithmeticTest extends TestCase
         $this->assertDecimalEquals($result, '1.11111');
     }
     
+    public function testOverriddenScale()
+    {
+        $result = Decimal::create('1.0', 1)->div('3', 5);
+        $this->assertDecimalEquals($result, '0.33333');
+    }
+    
     public function testNegate()
     {
         $a = Decimal::create('1.234', 4);
