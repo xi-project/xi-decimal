@@ -85,9 +85,7 @@ class Decimal
      */
     public function plus($that)
     {
-        $scale = self::maxScale($this, $that);
-        $result = bcadd((string)$this, (string)$that, $scale);
-        return new static($result, $scale);
+        return $this->doOp($that, 'bcadd');
     }
     
     /**
@@ -98,9 +96,7 @@ class Decimal
      */
     public function minus($that)
     {
-        $scale = self::maxScale($this, $that);
-        $result = bcsub((string)$this, (string)$that, $scale);
-        return new static($result, $scale);
+        return $this->doOp($that, 'bcsub');
     }
     
     /**
@@ -111,9 +107,7 @@ class Decimal
      */
     public function times($that)
     {
-        $scale = self::maxScale($this, $that);
-        $result = bcmul((string)$this, (string)$that, $scale);
-        return new static($result, $scale);
+        return $this->doOp($that, 'bcmul');
     }
         
     /**
@@ -124,8 +118,13 @@ class Decimal
      */
     public function div($that)
     {
+        return $this->doOp($that, 'bcdiv');
+    }
+    
+    protected function doOp($that, $op)
+    {
         $scale = self::maxScale($this, $that);
-        $result = bcdiv((string)$this, (string)$that, $scale);
+        $result = $op((string)$this, (string)$that, $scale);
         return new static($result, $scale);
     }
     
