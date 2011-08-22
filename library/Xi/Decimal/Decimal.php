@@ -130,6 +130,20 @@ class Decimal
     }
     
     /**
+     * Compares the value with an integer, float, string or Decimal.
+     * 
+     * Like Java's `compareTo()`, returns
+     * 0 if `$this == $that`, -1 if `$this < $that` and 1 if `$this > $that`.
+     * 
+     * @return int 0 if $this is equal to, -1 if less than or 1 if greater than $that.
+     */
+    public function compareTo($that)
+    {
+        $scale = $this->maxScale($this, $that);
+        return bccomp($this->asNormalizedString($this->amt, $scale), $this->asNormalizedString($that, $scale), $scale);
+    }
+    
+    /**
      * Checks (loose) equality with an integer, float, string or Decimal.
      * 
      * @param int|float|string|Decimal $that What to compare to.
@@ -137,13 +151,28 @@ class Decimal
      */
     public function equals($that)
     {
-        $scale = $this->maxScale($this, $that);
-        return $this->asNormalizedString($this->amt, $scale) == $this->asNormalizedString($that, $scale);
+        return $this->compareTo($that) === 0;
     }
     
-    //TODOTODOTODOTODOTODOTODOTODOTODO
-    //TODO  comparison functions  TODO
-    //TODOTODOTODOTODOTODOTODOTODOTODO
+    public function lessThan($that)
+    {
+        return $this->compareTo($that) < 0;
+    }
+    
+    public function lessThanOrEqual($that)
+    {
+        return $this->compareTo($that) <= 0;
+    }
+    
+    public function greaterThan($that)
+    {
+        return $this->compareTo($that) > 0;
+    }
+    
+    public function greaterThanOrEqual($that)
+    {
+        return $this->compareTo($that) >= 0;
+    }
     
     private static function maxScale($a, $b)
     {
